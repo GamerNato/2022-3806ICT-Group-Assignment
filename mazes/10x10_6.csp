@@ -1,0 +1,42 @@
+#define NoOfRows 10;
+#define NoOfCols 10;
+#define limit (2*NoOfRows);
+
+var maze[NoOfRows][NoOfCols]:{0..4} = [2,0,0,1,0,0,0,0,0,1,
+	0,1,0,1,0,1,0,1,1,1,
+	3,1,0,1,0,1,0,0,0,1,
+	1,1,0,1,1,1,1,1,0,1,
+	0,1,0,0,0,0,0,0,0,1,
+	0,1,1,1,1,1,1,1,0,1,
+	0,0,0,1,0,0,0,1,0,1,
+	0,1,0,1,0,1,0,1,0,1,
+	0,1,0,0,0,1,0,0,0,1,
+	1,1,1,1,1,1,1,1,1,1
+	];
+
+var pos[2]:{0..10} = [1,0];
+
+var time = 1;
+
+//Move the current position up 1
+MoveUp() = up{pos[0] = pos[0] - 1; time = time+1;}-> Move();
+
+//Move the current position down 1
+MoveDown() = down{pos[0] = pos[0] + 1; time = time+1;}-> Move();
+
+//Move the current position left 1
+MoveLeft() = left{pos[1] = pos[1] - 1; time = time+1;}-> Move();
+
+//Move the current position right 1
+MoveRight() = right{pos[1] = pos[1] + 1; time = time+1;}-> Move();
+
+//Define when goal is found
+#define goalGoalFound (maze[pos[0]][pos[1]] == 3 && time<=limit);
+
+//The task Move is the sequence of primitive tasks MoveUp, MoveDown, MoveLeft, MoveRight.
+Move() = [pos[0] != 0 &&            maze[pos[0]-1][pos[1]] != 1]MoveUp()   []
+         [pos[0] != NoOfCols - 1 && maze[pos[0]+1][pos[1]] != 1]MoveDown() []
+         [pos[1] != 0  &&           maze[pos[0]][pos[1]-1] != 1]MoveLeft() []
+         [pos[1] != NoOfRows - 1 && maze[pos[0]][pos[1]+1] != 1]MoveRight();
+
+#assert Move() reaches goalGoalFound;
